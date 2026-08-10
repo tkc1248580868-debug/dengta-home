@@ -1,0 +1,112 @@
+services:
+  - type: web
+    name: dengta-home-backend
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    autoDeploy: true
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: AUTH_REQUIRED
+        value: "true"
+      - key: INITIAL_OWNER_EMAIL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: MCP_ENCRYPTION_KEY
+        sync: false
+      - key: OPENAI_COMPATIBLE_API_KEY
+        sync: false
+      - key: PUSH_SECRET
+        sync: false
+      - key: BACKGROUND_JOBS_ENABLED
+        value: "false"
+      - key: BACKGROUND_JOB_TRIGGER_SECRET
+        sync: false
+      - key: BACKGROUND_JOB_CONCURRENCY
+        value: "4"
+      - key: BACKGROUND_JOB_BATCH_SIZE
+        value: "10"
+      - key: BACKGROUND_JOB_LEASE_SECONDS
+        value: "300"
+      - key: BACKGROUND_JOB_MAX_ATTEMPTS
+        value: "5"
+      - key: BACKGROUND_JOB_RETRY_BASE_SECONDS
+        value: "30"
+      - key: BACKGROUND_JOB_RETRY_MAX_SECONDS
+        value: "3600"
+      - key: BACKGROUND_JOB_TICK_BUDGET_MS
+        value: "45000"
+      - key: FRONTEND_URL
+        sync: false
+      - key: HERVOICE_URL
+        sync: false
+      - key: HERVOICE_SECRET
+        sync: false
+      - key: HERVOICE_TIMEOUT_MS
+        value: 90000
+      - key: VOICE_RATE_LIMIT_WINDOW_MS
+        value: 60000
+      - key: VOICE_RATE_LIMIT_MAX
+        value: 6
+      - key: EXPRESSIVE_TTS_PROVIDER
+        value: minimax
+      - key: MINIMAX_API_KEY
+        sync: false
+      - key: MINIMAX_TTS_URL
+        value: https://api.minimax.io/v1/t2a_v2
+      - key: MINIMAX_TTS_MODEL
+        value: speech-2.8-turbo
+      - key: MINIMAX_TTS_VOICE_ID
+        sync: false
+      - key: MINIMAX_TTS_SPEED
+        value: "1"
+      - key: MINIMAX_TTS_VOLUME
+        value: "1"
+      - key: MINIMAX_TTS_PITCH
+        value: "0"
+      - key: MINIMAX_TTS_VOICE_MODIFY_PITCH
+        value: "0"
+      - key: MINIMAX_TTS_VOICE_MODIFY_INTENSITY
+        value: "0"
+      - key: MINIMAX_TTS_VOICE_MODIFY_TIMBRE
+        value: "0"
+      - key: MINIMAX_TTS_VOICE_MODIFY_SOUND_EFFECT
+        value: ""
+      - key: MINIMAX_TTS_EMOTION
+        value: auto
+      - key: EXPRESSIVE_TTS_TIMEOUT_MS
+        value: 45000
+      - key: EXPRESSIVE_TTS_MAX_CHARS
+        value: 3000
+      - key: EXPRESSIVE_TTS_RATE_LIMIT_WINDOW_MS
+        value: 60000
+      - key: EXPRESSIVE_TTS_RATE_LIMIT_MAX
+        value: 12
+      - key: EXPRESSIVE_TTS_TOKEN_TTL_SECONDS
+        value: 600
+      - key: EXPRESSIVE_TTS_CACHE_MAX_ENTRIES
+        value: 24
+      - key: EXPRESSIVE_TTS_CACHE_MAX_BYTES
+        value: 25165824
+      - key: OMBRE_BRAIN_URL
+        sync: false
+      - key: OMBRE_DASHBOARD_URL
+        sync: false
+      - key: OMBRE_DASHBOARD_PASSWORD
+        sync: false
+      - key: OMBRE_MCP_TOKEN
+        sync: false
+      - key: OMBRE_MCP_TIMEOUT_MS
+        value: 8000
+      - key: OMBRE_MCP_PROTOCOL_VERSION
+        value: 2024-11-05
+      - key: OMBRE_DASHBOARD_TIMEOUT_MS
+        value: 8000

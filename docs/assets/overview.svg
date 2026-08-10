@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">DengTa Home product overview</title>
+  <desc id="desc">A self-hosted AI companion app with glass chat, memory, diary, moments and Android support.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b9e7f3"/>
+      <stop offset="0.48" stop-color="#f8edc8"/>
+      <stop offset="1" stop-color="#f7b1a6"/>
+    </linearGradient>
+    <linearGradient id="rainbow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6d8dff"/>
+      <stop offset="0.25" stop-color="#6cebd9"/>
+      <stop offset="0.5" stop-color="#ffe56c"/>
+      <stop offset="0.75" stop-color="#ff8fba"/>
+      <stop offset="1" stop-color="#b67cff"/>
+    </linearGradient>
+    <radialGradient id="sun">
+      <stop offset="0" stop-color="#fffde7" stop-opacity="1"/>
+      <stop offset="0.3" stop-color="#ffe9a0" stop-opacity=".78"/>
+      <stop offset="1" stop-color="#ffb99b" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="20" stdDeviation="28" flood-color="#586075" flood-opacity=".2"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" rx="48" fill="url(#sky)"/>
+  <circle cx="1420" cy="690" r="280" fill="url(#sun)"/>
+  <g fill="#fff" opacity=".66">
+    <circle cx="136" cy="126" r="3"/><circle cx="258" cy="72" r="2"/><circle cx="1230" cy="104" r="3"/><circle cx="1510" cy="205" r="2"/>
+  </g>
+  <g transform="translate(120 94)">
+    <rect width="1360" height="712" rx="54" fill="#ffffff" fill-opacity=".2" stroke="#fff" stroke-opacity=".78" stroke-width="2" filter="url(#shadow)"/>
+    <g transform="translate(52 46)">
+      <circle cx="28" cy="28" r="28" fill="#fff" fill-opacity=".3"/>
+      <path d="M18 21h20M18 28h20M18 35h20" stroke="#19212c" stroke-width="3" stroke-linecap="round"/>
+      <text x="628" y="24" text-anchor="middle" font-family="system-ui,sans-serif" font-size="22" font-weight="700" fill="#17202a">DengTa Home</text>
+      <text x="628" y="50" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" fill="#52606d">self-hosted · account isolated · model agnostic</text>
+      <circle cx="1228" cy="28" r="28" fill="#fff" fill-opacity=".3"/>
+      <path d="M1220 28h16M1228 20v16" stroke="#19212c" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <g transform="translate(482 132)">
+      <rect width="396" height="74" rx="37" fill="#fff" fill-opacity=".32" stroke="#fff" stroke-opacity=".9"/>
+      <rect x="24" y="17" width="210" height="40" rx="20" fill="url(#rainbow)" opacity=".9"/>
+      <circle cx="275" cy="37" r="13" fill="none" stroke="#17202a" stroke-width="3"/>
+      <path d="M327 30c7-8 20-3 20 7 0 11-20 20-20 20s-20-9-20-20c0-10 13-15 20-7z" fill="none" stroke="#17202a" stroke-width="3" transform="scale(.58) translate(238 29)"/>
+      <circle cx="354" cy="37" r="17" fill="#fff3bf"/>
+      <text x="354" y="44" text-anchor="middle" font-family="system-ui,sans-serif" font-size="20" font-weight="900" fill="#17202a">D</text>
+    </g>
+    <g font-family="system-ui,sans-serif" fill="#17202a">
+      <rect x="154" y="248" width="430" height="112" rx="34" fill="#fff" fill-opacity=".3" stroke="#fff" stroke-opacity=".72"/>
+      <text x="186" y="292" font-size="22">早安，今天想从哪里开始？</text>
+      <text x="186" y="328" font-size="14" fill="#627080">08:02 · AI companion</text>
+      <rect x="776" y="386" width="360" height="98" rx="34" fill="#ffdce8" fill-opacity=".58" stroke="#fff" stroke-opacity=".8"/>
+      <text x="808" y="428" font-size="22">先陪我聊一会儿。</text>
+      <text x="1086" y="458" text-anchor="end" font-size="14" fill="#7c6871">08:03</text>
+      <rect x="154" y="500" width="516" height="124" rx="34" fill="#fff" fill-opacity=".3" stroke="#fff" stroke-opacity=".72"/>
+      <text x="186" y="544" font-size="22">好。记忆、日记和此刻的心情，</text>
+      <text x="186" y="578" font-size="22">都会留在你自己的账号里。</text>
+      <text x="186" y="608" font-size="14" fill="#627080">08:03 · encrypted account scope</text>
+    </g>
+    <g transform="translate(838 526)" font-family="system-ui,sans-serif">
+      <rect width="382" height="114" rx="30" fill="#15181f" fill-opacity=".82"/>
+      <text x="28" y="34" font-size="14" fill="#aeb6c3">COMPANION SPACE</text>
+      <text x="28" y="69" font-size="22" font-weight="700" fill="#fff">Memory · Diary · Moments</text>
+      <rect x="28" y="86" width="250" height="8" rx="4" fill="url(#rainbow)"/>
+    </g>
+  </g>
+</svg>

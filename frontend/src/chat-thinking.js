@@ -1,0 +1,155 @@
+const STATUS_LABELS = {
+  preparing_request: "正在准备并发送这条消息",
+  accepted: "服务器已接收本轮消息",
+  already_received: "服务器已识别并复用先前保存的消息",
+  generation_in_progress: "消息已保存，AI 仍在处理中",
+  reading_attachments: "正在读取附件",
+  reading_files: "正在读取附件",
+  processing_attachments: "正在安全读取附件",
+  attachments_ready: "附件已经读取完成",
+  organizing_context: "正在整理对话上下文",
+  preparing_context: "正在整理对话上下文",
+  generating: "正在生成回复",
+  calling_model: "正在请求所选模型",
+  saving: "正在保存本轮对话",
+  completed: "本轮处理完成",
+};
+
+function removeControlCharacters(value) {
+  return Array.from(String(value || ""))
+    .filter((character) => {
+      const code = character.charCodeAt(0);
+      return code >= 32 || code === 9 || code === 10 || code === 13;
+    })
+    .join("");
+}
+
+function cleanText(value, limit = 2_000) {
+  return removeControlCharacters(value).trim().slice(0, limit);
+}
+
+export function appendThinkingSummary(current = "", value, limit = 6_000) {
+  const previous = removeControlCharacters(current).slice(-limit);
+  const chunk = removeControlCharacters(value);
+  if (!chunk) return previous;
+  return `${previous}${chunk}`.slice(-limit);
+}
+
+export function localizedThinkingStatus(value) {
+  const text = cleanText(value, 120);
+  if (!text) return "";
+  const key = text.toLowerCase().replace(/[\s-]+/g, "_");
+  return STATUS_LABELS[key] || "";
+}
+
+export function appendThinkingStatus(current = [], value) {
+  const next = localizedThinkingStatus(value);
+  const statuses = Array.isArray(current) ? current.filter(Boolean).slice(-7) : [];
+  if (!next || statuses.at(-1) === next) return statuses;
+  return [...statuses, next].slice(-8);
+}
+
+export function personalizedThinkingStatus(
+  value,
+  { aiName = "伴侣", companionMood = "" } = {},
+) {
+  const status = cleanText(value, 160);
+  void aiName;
+  void companionMood;
+  return status;
+}
+
+export function thinkingPanelVisible(message = {}) {
+  return (
+    (Array.isArray(message.thinkingStatuses) &&
+      message.thinkingStatuses.length > 0) ||
+    cleanText(message.thinkingSummary, 6_000).length > 0
+  );
+}
+
+export function thinkingPanelCompleted(message = {}) {
+  return (
+    message?.isStreaming !== true && message?.generationInProgress !== true
+  );
+}
+
+function publicMessageFields(message = {}) {
+  const safeMessage = { ...message };
+  delete safeMessage.reasoningSummary;
+  delete safeMessage.reasoning_summary;
+  delete safeMessage.reasoning;
+  delete safeMessage.reasoning_content;
+  delete safeMessage.thinking;
+  delete safeMessage.thinking_content;
+  if (
+    safeMessage.tool_calls &&
+    typeof safeMessage.tool_calls === "object" &&
+    !Array.isArray(safeMessage.tool_calls)
+  ) {
+    safeMessage.tool_calls = { ...safeMessage.tool_calls };
+    delete safeMessage.tool_calls.reasoningSummary;
+    delete safeMessage.tool_calls.reasoning_summary;
+    delete safeMessage.tool_calls.reasoning;
+    delete safeMessage.tool_calls.reasoning_content;
+    delete safeMessage.tool_calls.thinking;
+    delete safeMessage.tool_calls.thinking_content;
+  }
+  return safeMessage;
+}
+
+function stageValue(value) {
+  if (typeof value === "string") return value;
+  if (!value || typeof value !== "object") return "";
+  return value.stage || value.status || value.content || "";
+}
+
+function publicStageKey(value) {
+  const text = cleanText(stageValue(value), 120);
+  const key = text.toLowerCase().replace(/[\s-]+/g, "_");
+  return Object.hasOwn(STATUS_LABELS, key) ? key : "";
+}
+
+export function hydrateStoredThinkingTrace(message = {}) {
+  const storedStages = message?.tool_calls?.processing_stages;
+  const source = Array.isArray(storedStages)
+    ? storedStages
+    : message.thinkingStatuses;
+  const thinkingStatuses = Array.isArray(source)
+    ? source.reduce(
+        (current, stage) =>
+          appendThinkingStatus(current, publicStageKey(stage)),
+        [],
+      )
+    : [];
+
+  return {
+    ...publicMessageFields(message),
+    thinkingStatuses,
+  };
+}
+
+export function attachThinkingTrace(message = {}, trace = {}) {
+  return {
+    ...publicMessageFields(message),
+    thinkingStatuses: Array.isArray(trace.statuses) ? trace.statuses : [],
+    thinkingSummary: cleanText(trace.summary, 6_000),
+  };
+}
+
+export function mergeStreamedAssistantMessage(
+  localMessage = {},
+  serverMessage = {},
+  trace = {},
+) {
+  return attachThinkingTrace(
+    {
+      ...localMessage,
+      ...serverMessage,
+      content: serverMessage?.content ?? localMessage?.content ?? "",
+      isStreaming: false,
+      generationInProgress: false,
+      retryAvailable: false,
+    },
+    trace,
+  );
+}

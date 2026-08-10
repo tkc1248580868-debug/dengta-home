@@ -1,0 +1,1790 @@
+/*
+ * Apple-inspired application shell informed by VoltAgent/awesome-design-md,
+ * design-md/apple at commit 8147538 (MIT). See THIRD_PARTY_NOTICES.md.
+ * https://github.com/VoltAgent/awesome-design-md/tree/8147538b4226ae41e2487a9179e3bcc1f68e8554/design-md/apple
+ */
+:root {
+  --apple-blue: #0066cc;
+  --apple-blue-focus: #0071e3;
+  --apple-blue-dark: #2997ff;
+  --apple-ink: #1d1d1f;
+  --apple-muted: #6e6e73;
+  --apple-hairline: #d2d2d7;
+  --apple-divider: #e5e5ea;
+  --apple-canvas: #ffffff;
+  --apple-parchment: #f5f5f7;
+  --apple-pearl: #fafafc;
+  --apple-black: #000000;
+  --apple-dark: #1c1c1e;
+  --apple-dark-raised: #2c2c2e;
+  --apple-radius-card: 8px;
+  --apple-radius-control: 8px;
+  --apple-radius-bubble: 18px;
+  --apple-font-display:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "HarmonyOS Sans SC",
+    "Noto Sans SC", "PingFang SC", system-ui, sans-serif;
+  --apple-font-text:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "HarmonyOS Sans SC",
+    "Noto Sans SC", "PingFang SC", system-ui, sans-serif;
+  color: var(--apple-ink);
+  background: var(--apple-parchment);
+  color-scheme: light;
+  font-family: var(--apple-font-text);
+}
+
+html,
+body,
+#root {
+  color: var(--apple-ink);
+  background: var(--apple-parchment);
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--apple-font-text);
+  letter-spacing: 0;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--apple-blue-focus);
+  outline-offset: 2px;
+}
+
+.app-shell {
+  grid-template-columns: 264px minmax(0, 1fr);
+  color: var(--apple-ink);
+  background: var(--apple-parchment);
+}
+
+.celestial-backdrop {
+  background: var(--apple-parchment);
+}
+
+.celestial-sky-wash,
+.celestial-milky-way,
+.celestial-stars,
+.celestial-clouds,
+.celestial-light-field,
+.celestial-body,
+.celestial-lens-flare,
+.celestial-window-lattice,
+.celestial-shadow-cast,
+.celestial-glass-grain {
+  display: none;
+}
+
+.main-panel,
+.view-content,
+.feature-page {
+  color: var(--apple-ink);
+  background: transparent;
+}
+
+.main-panel {
+  isolation: isolate;
+}
+
+/* Global navigation */
+.sidebar {
+  gap: 18px;
+  padding: max(18px, env(safe-area-inset-top)) 14px 14px;
+  border: 0;
+  border-right: 1px solid #262626;
+  color: #ffffff;
+  background: var(--apple-black);
+  box-shadow: none;
+}
+
+.brand {
+  gap: 12px;
+  padding: 2px 8px 14px;
+  border-bottom: 1px solid #2c2c2e;
+}
+
+.brand-icon {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  overflow: visible;
+  border: 1px solid #ececf0;
+  border-radius: 8px;
+  color: #e8d7bc;
+  background: #ffffff;
+  box-shadow: none;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.brand-icon::after {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 8px;
+  height: 8px;
+  border: 1px solid rgb(255 255 255 / 0.84);
+  border-radius: 50%;
+  background: conic-gradient(#ffc9db, #cddaff, #cff7ee, #fff4ba, #ffc9db);
+  box-shadow: inset 1px 1px 2px rgb(255 255 255 / 0.9);
+  content: "";
+}
+
+.brand strong {
+  color: #ffffff;
+  font-family: var(--apple-font-display);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.brand small,
+.session-heading,
+.sidebar-footer {
+  color: #a1a1a6;
+}
+
+.primary-nav {
+  grid-template-columns: 1fr;
+  gap: 3px;
+}
+
+.primary-nav button,
+.session-select,
+.session-actions button {
+  min-height: 40px;
+  border-radius: var(--apple-radius-control);
+  color: #d1d1d6;
+  background: transparent;
+  font-size: 14px;
+}
+
+.primary-nav button {
+  padding: 9px 10px;
+}
+
+.primary-nav button span,
+.session-select span:first-child {
+  color: #a1a1a6;
+}
+
+.primary-nav button:hover,
+.primary-nav button.active,
+.session-item:hover,
+.session-item.active {
+  color: #ffffff;
+  background: #2c2c2e;
+}
+
+.primary-nav button.active span {
+  color: var(--apple-blue-dark);
+}
+
+.session-heading {
+  padding: 4px 8px 0;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.session-heading button {
+  border: 0;
+  border-radius: 50%;
+  color: #ffffff;
+  background: #2c2c2e;
+}
+
+.session-list {
+  gap: 2px;
+}
+
+.session-item {
+  border-radius: var(--apple-radius-control);
+}
+
+.session-select {
+  padding: 8px;
+}
+
+.session-actions button:hover {
+  color: #ffffff;
+  background: #3a3a3c;
+}
+
+.sidebar-account-slot {
+  border-top: 1px solid #2c2c2e;
+}
+
+.sidebar-footer {
+  font-size: 11px;
+}
+
+.connection-dot {
+  background: #8e8e93;
+  box-shadow: none;
+}
+
+.connection-dot.online {
+  background: #30d158;
+}
+
+/* Frosted utility bar */
+.topbar {
+  min-height: 52px;
+  padding: 0 20px;
+  border: 0;
+  border-bottom: 1px solid rgb(0 0 0 / 0.1);
+  color: var(--apple-ink);
+  background: rgb(245 245 247 / 0.88);
+  box-shadow: none;
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+.topbar h1 {
+  color: var(--apple-ink);
+  font-family: var(--apple-font-display);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.topbar p {
+  color: var(--apple-muted);
+  font-size: 12px;
+}
+
+.menu-button,
+.new-chat-top,
+.settings-gear-button,
+.install-button {
+  min-width: 36px;
+  min-height: 36px;
+  border: 0;
+  border-radius: 50%;
+  color: var(--apple-ink);
+  background: #e8e8ed;
+  box-shadow: none;
+}
+
+.new-chat-top {
+  padding: 0 14px;
+  border-radius: 18px;
+  color: #ffffff;
+  background: var(--apple-blue);
+  font-size: 13px;
+}
+
+.new-chat-top:hover,
+.install-button:hover {
+  border: 0;
+  background: var(--apple-blue-focus);
+}
+
+.settings-gear-button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+/* Presence and weather */
+.chat-presence-stack {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.6fr);
+  align-items: stretch;
+  gap: 1px;
+  border-bottom: 1px solid var(--apple-divider);
+  background: var(--apple-divider);
+}
+
+.chat-presence-stack.is-hidden {
+  display: none;
+}
+
+.companion-status,
+.companion-status.expanded,
+.companion-status.high-energy,
+.companion-status.low-energy {
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  color: #ffffff;
+  background: var(--apple-dark);
+  box-shadow: none;
+  animation: none;
+}
+
+.companion-status::before,
+.companion-status::after,
+.status-pulse-runner {
+  display: none;
+}
+
+.status-pulse-bg {
+  opacity: 0.38;
+  mix-blend-mode: normal;
+}
+
+.status-pulse-line {
+  stroke: var(--apple-blue-dark);
+}
+
+.status-summary {
+  min-height: 72px;
+  padding: 14px 20px;
+}
+
+.status-presence {
+  width: 9px;
+  height: 9px;
+  border: 0;
+  background: #30d158;
+  box-shadow: none;
+}
+
+.status-name-line strong,
+.status-glance,
+.status-reaction-preview,
+.status-chevron,
+.status-mini-vitals,
+.status-mini-vitals strong {
+  color: #ffffff;
+}
+
+.status-mood,
+.status-mini-vitals span,
+.status-eyebrow,
+.status-signal-kicker,
+.status-disclaimer {
+  color: #a1a1a6;
+}
+
+.status-panel {
+  border-top: 1px solid #3a3a3c;
+  color: #ffffff;
+  background: var(--apple-dark);
+}
+
+.status-signal-hero,
+.status-card,
+.status-vital-tile,
+.pulse-readout,
+.status-record-card li,
+.status-record-empty {
+  border: 1px solid #3a3a3c;
+  border-radius: var(--apple-radius-card);
+  color: #ffffff;
+  background: var(--apple-dark-raised);
+  box-shadow: none;
+}
+
+.status-card h3,
+.status-card-heading h3,
+.status-vital-heading strong,
+.pulse-readout strong,
+.countdown-card h3 {
+  color: #ffffff;
+}
+
+.status-facts dt,
+.status-vital-heading span,
+.pulse-readout small,
+.hot-zone-copy small {
+  color: #a1a1a6;
+}
+
+.status-facts dd {
+  color: #f5f5f7;
+}
+
+.status-vital-track,
+.countdown-progress {
+  background: #48484a;
+}
+
+.status-vital-track > span,
+.countdown-progress > span,
+.energy-track > span {
+  background: var(--apple-blue-dark);
+}
+
+.hot-zone-grid button,
+.recovery-action-grid button,
+.countdown-actions button,
+.countdown-card select {
+  border: 1px solid #48484a;
+  border-radius: var(--apple-radius-control);
+  color: #ffffff;
+  background: #3a3a3c;
+}
+
+.hot-zone-grid button.active,
+.hot-zone-grid button:hover,
+.recovery-action-grid button:hover,
+.recovery-action-grid button:focus-visible,
+.countdown-actions button:first-child {
+  border-color: var(--apple-blue-dark);
+  color: #ffffff;
+  background: var(--apple-blue);
+}
+
+.ambient-context-badge,
+.ambient-context-badge:not(.is-minimized),
+.ambient-context-badge.is-minimized {
+  min-height: 72px;
+  border: 0;
+  border-radius: 0;
+  color: var(--apple-ink);
+  background: var(--apple-canvas);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.ambient-context-time,
+.ambient-context-weather,
+.ambient-context-weather-copy {
+  color: var(--apple-ink);
+}
+
+.ambient-context-kicker,
+.ambient-context-date,
+.ambient-context-status,
+.ambient-context-solar {
+  color: var(--apple-muted);
+}
+
+.ambient-context-divider {
+  background: var(--apple-divider);
+}
+
+.ambient-context-toggle,
+.ambient-context-actions button,
+.ambient-context-badge.state-ready .ambient-context-toggle {
+  border: 0;
+  border-radius: 16px;
+  color: var(--apple-blue);
+  background: var(--apple-parchment);
+  box-shadow: none;
+}
+
+/* Chat */
+.view-content {
+  background: var(--apple-parchment);
+}
+
+.message-list {
+  padding: 22px clamp(16px, 4vw, 52px) 18px;
+  background: transparent;
+  scrollbar-color: #c7c7cc transparent;
+}
+
+.message-row {
+  margin-bottom: 16px;
+}
+
+.message-avatar {
+  border: 0;
+  border-radius: 50%;
+  color: #ffffff;
+  background: var(--apple-dark);
+  box-shadow: none;
+}
+
+.message-row.user .message-avatar {
+  color: #ffffff;
+  background: var(--apple-blue);
+}
+
+.message-role {
+  color: var(--apple-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.message-bubble,
+.message-row.assistant .message-bubble,
+.message-row.user .message-bubble {
+  border: 1px solid var(--apple-divider);
+  border-radius: var(--apple-radius-bubble);
+  box-shadow: none;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.message-row.assistant .message-bubble {
+  color: var(--apple-ink);
+  background: var(--apple-canvas);
+}
+
+.message-row.user .message-bubble {
+  border-color: var(--apple-blue);
+  color: #ffffff;
+  background: var(--apple-blue);
+}
+
+.message-row.assistant .message-bubble::after,
+.message-row.user .message-bubble::after {
+  display: none;
+}
+
+.message-footer,
+.message-bubble time {
+  color: var(--apple-muted);
+}
+
+.message-row.user .message-footer,
+.message-row.user .message-bubble time {
+  color: rgb(255 255 255 / 0.74);
+}
+
+.message-reference-block,
+.thinking-panel,
+.composer-message-reference {
+  border: 1px solid var(--apple-divider);
+  border-radius: var(--apple-radius-card);
+  color: var(--apple-ink);
+  background: var(--apple-parchment);
+  box-shadow: none;
+}
+
+.message-row.user .message-reference-block {
+  border-color: rgb(255 255 255 / 0.28);
+  color: #ffffff;
+  background: rgb(255 255 255 / 0.14);
+}
+
+.stream-caret {
+  color: var(--apple-blue);
+}
+
+.composer-wrap {
+  padding: 10px clamp(12px, 3vw, 34px) calc(10px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--apple-divider);
+  background: rgb(245 245 247 / 0.9);
+  box-shadow: none;
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+.composer {
+  min-height: 52px;
+  border: 1px solid var(--apple-hairline);
+  border-radius: 26px;
+  background: var(--apple-canvas);
+  box-shadow: none;
+}
+
+.composer:focus-within {
+  border-color: var(--apple-blue-focus);
+  box-shadow: 0 0 0 1px var(--apple-blue-focus);
+}
+
+.composer textarea {
+  color: var(--apple-ink);
+  font-family: var(--apple-font-text);
+  font-size: 16px;
+}
+
+.composer textarea::placeholder {
+  color: #8e8e93;
+}
+
+.chat-attach-button,
+.send-button,
+.voice-record-button {
+  border: 0;
+  border-radius: 50%;
+  box-shadow: none;
+}
+
+.chat-attach-button,
+.voice-record-button {
+  color: var(--apple-ink);
+  background: #e8e8ed;
+}
+
+.send-button {
+  color: #ffffff;
+  background: var(--apple-blue);
+}
+
+.send-button:hover {
+  background: var(--apple-blue-focus);
+}
+
+.composer-tool-menu,
+.sticker-picker {
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-radius-card);
+  color: var(--apple-ink);
+  background: var(--apple-canvas);
+  box-shadow: 0 18px 46px rgb(0 0 0 / 0.12);
+}
+
+.composer-tool-grid > button,
+.sticker-picker button {
+  border-radius: var(--apple-radius-control);
+  color: var(--apple-ink);
+  background: var(--apple-parchment);
+}
+
+/* Full-width functional pages */
+.feature-page,
+.settings-page {
+  padding: clamp(18px, 3vw, 32px);
+}
+
+.deferred-feature {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 18px 20px;
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-radius-card);
+  color: var(--apple-muted);
+  background: var(--apple-canvas);
+  font-size: 13px;
+}
+
+.deferred-feature > span {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: var(--apple-blue);
+  animation: apple-loading-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes apple-loading-pulse {
+  to {
+    opacity: 0.35;
+    transform: scale(0.78);
+  }
+}
+
+.view-diary .topbar {
+  display: flex;
+}
+
+.moments-page,
+.companion-diary-page,
+.memory-page {
+  color: var(--apple-ink);
+  background: var(--apple-parchment);
+}
+
+.moments-journal-hero,
+.diary-journal-hero {
+  position: relative;
+  min-height: 0;
+  margin: calc(-1 * clamp(18px, 3vw, 32px))
+    calc(-1 * clamp(18px, 3vw, 32px)) 22px;
+  overflow: visible;
+  border: 0;
+  border-bottom: 1px solid var(--apple-hairline);
+  background: var(--apple-canvas);
+}
+
+.moments-journal-hero > img,
+.diary-journal-hero > img {
+  display: none;
+}
+
+.moments-journal-hero > div,
+.diary-journal-hero > div {
+  position: static;
+  width: min(100%, 980px);
+  margin: 0 auto;
+  padding: 28px clamp(18px, 3vw, 32px) 26px;
+  text-shadow: none;
+}
+
+.moments-journal-hero span,
+.diary-journal-hero span {
+  color: var(--apple-blue);
+  font-family: var(--apple-font-ui);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.moments-journal-hero h2,
+.diary-journal-hero h2 {
+  margin: 8px 0 6px;
+  color: var(--apple-ink);
+  font-family: var(--apple-font-display);
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 650;
+}
+
+.moments-journal-hero p,
+.diary-journal-hero p {
+  max-width: 640px;
+  margin: 0;
+  color: var(--apple-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.moments-page .moment-composer,
+.moments-page .moment-card,
+.moments-page .empty-card,
+.diary-generation-state,
+.diary-empty,
+.diary-entry {
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-radius-card);
+  color: var(--apple-ink);
+  background: var(--apple-canvas);
+  box-shadow: none;
+}
+
+.moments-page .moment-composer::before,
+.moments-page .moment-list::before {
+  display: none;
+}
+
+.moments-page .moment-submit,
+.moments-page .comment-box button {
+  color: #ffffff;
+  background: var(--apple-blue);
+}
+
+.moments-page .moment-card > header strong,
+.moments-page .moment-card > p,
+.diary-generation-state strong,
+.diary-empty h3,
+.diary-entry h3,
+.diary-entry > p {
+  color: var(--apple-ink);
+  font-family: var(--apple-font-ui);
+}
+
+.moments-page .moment-card > header time,
+.moments-page .moment-actions,
+.diary-generation-state span,
+.diary-empty,
+.diary-entry time,
+.diary-entry > footer {
+  color: var(--apple-muted);
+}
+
+.diary-generation-state.state-writing {
+  border-color: #b7d5f2;
+  background: #eef7ff;
+}
+
+.diary-empty {
+  border-style: solid;
+}
+
+.diary-empty h3,
+.diary-entry h3 {
+  font-weight: 600;
+}
+
+.diary-entry,
+.diary-entry:nth-child(even) {
+  transform: none;
+}
+
+.diary-entry > header > span {
+  border-color: #b7d5f2;
+  color: var(--apple-blue);
+  background: #eef7ff;
+}
+
+.feature-header h2,
+.empty-state h2,
+.centered-feature h2,
+.nursery-hero h2,
+.settings-page > h2,
+.settings-card h3 {
+  color: var(--apple-ink);
+  font-family: var(--apple-font-display);
+  font-weight: 600;
+}
+
+.feature-header p,
+.empty-state,
+.centered-feature p,
+.card-hint {
+  color: var(--apple-muted);
+}
+
+.moment-card,
+.diary-card,
+.memory-card,
+.profile-card,
+.settings-card,
+.notification-feature-panel,
+.device-activity-panel,
+.screen-glance-panel,
+.nursery-state-grid,
+.nursery-speech-form,
+.nursery-care-grid > button,
+.nursery-bonds,
+.nursery-album,
+.nursery-portrait,
+.nursery-empty-state,
+.nursery-birth-scene,
+.provider-center-card,
+.mcp-card,
+.creative-invitation-card,
+.creative-permission-form,
+.creative-provider-form,
+.artwork-card,
+.artwork-empty {
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-radius-card);
+  color: var(--apple-ink);
+  background: var(--apple-canvas);
+  box-shadow: none;
+}
+
+.memory-card:hover,
+.moment-card:hover,
+.diary-card:hover,
+.nursery-care-grid > button:hover {
+  border-color: #a1a1a6;
+  transform: none;
+  box-shadow: none;
+}
+
+.feature-page button,
+.settings-page button,
+.settings-sheet button,
+.dialog-card button {
+  border-radius: var(--apple-radius-control);
+}
+
+.feature-page button.primary,
+.settings-page button.primary,
+.save-bar button,
+.nursery-speech-form button[type="submit"],
+.nursery-name-form button,
+.nursery-companion-action,
+.dialog-card button[type="submit"] {
+  border-color: var(--apple-blue);
+  color: #ffffff;
+  background: var(--apple-blue);
+}
+
+.settings-grid input,
+.settings-grid textarea,
+.settings-grid select,
+.nursery-name-form input,
+.nursery-speech-composer input,
+.dialog-card input,
+.countdown-card select {
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-radius-control);
+  color: var(--apple-ink);
+  background: var(--apple-pearl);
+  box-shadow: none;
+}
+
+.settings-grid input:focus,
+.settings-grid textarea:focus,
+.settings-grid select:focus,
+.nursery-name-form input:focus,
+.nursery-speech-composer input:focus {
+  border-color: var(--apple-blue-focus);
+  box-shadow: 0 0 0 1px var(--apple-blue-focus);
+}
+
+.nursery-page {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.nursery-hero {
+  padding: 28px 0 22px;
+  border-bottom: 1px solid var(--apple-divider);
+}
+
+.nursery-child-orbit,
+.nursery-birth-mark {
+  color: var(--apple-blue);
+  background: var(--apple-parchment);
+  box-shadow: none;
+}
+
+.nursery-local-badge,
+.nursery-segments button.active {
+  border-color: var(--apple-blue);
+  color: #ffffff;
+  background: var(--apple-blue);
+}
+
+.nursery-meter > span {
+  background: var(--apple-blue);
+}
+
+/* Settings sheet */
+.settings-sheet-backdrop,
+.dialog-backdrop {
+  background: rgb(0 0 0 / 0.34);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.settings-sheet {
+  border: 0;
+  border-left: 1px solid var(--apple-hairline);
+  border-radius: 0;
+  color: var(--apple-ink);
+  background: var(--apple-parchment);
+  box-shadow: -24px 0 60px rgb(0 0 0 / 0.14);
+}
+
+.settings-sheet-header {
+  min-height: 64px;
+  border-bottom: 1px solid var(--apple-divider);
+  color: var(--apple-ink);
+  background: rgb(245 245 247 / 0.9);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+.settings-sheet-header span {
+  color: var(--apple-muted);
+}
+
+.settings-sheet-header h2 {
+  color: var(--apple-ink);
+  font-family: var(--apple-font-display);
+  font-weight: 600;
+}
+
+.settings-sheet-header button {
+  border: 0;
+  border-radius: 16px;
+  color: var(--apple-blue);
+  background: transparent;
+  font-weight: 600;
+}
+
+.settings-sheet-scroll {
+  background: var(--apple-parchment);
+}
+
+.settings-card {
+  margin-bottom: 12px;
+  padding: 20px;
+}
+
+.save-bar {
+  border-top: 1px solid var(--apple-divider);
+  background: rgb(245 245 247 / 0.92);
+  box-shadow: none;
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+.autosave-status,
+.autosave-hint,
+.prompt-field-count {
+  color: var(--apple-muted);
+}
+
+.dialog-card {
+  border: 1px solid var(--apple-hairline);
+  border-radius: var(--apple-radius-card);
+  color: var(--apple-ink);
+  background: var(--apple-canvas);
+  box-shadow: 0 22px 70px rgb(0 0 0 / 0.2);
+}
+
+.notice,
+.connection-recovery {
+  margin: 10px 18px 0;
+  border: 1px solid #e8c78f;
+  border-radius: var(--apple-radius-card);
+  color: #6b4f1d;
+  background: #fff8e8;
+  box-shadow: none;
+}
+
+.connection-recovery button {
+  border: 0;
+  color: #ffffff;
+  background: var(--apple-blue);
+}
+
+/* High-contrast Night mode: explicit colors, never filter inversion. */
+:root[data-dengta-appearance="night"] {
+  --apple-ink: #f5f5f7;
+  --apple-muted: #a1a1a6;
+  --apple-hairline: #48484a;
+  --apple-divider: #38383a;
+  --apple-canvas: #1c1c1e;
+  --apple-parchment: #000000;
+  --apple-pearl: #2c2c2e;
+  color: #f5f5f7;
+  background: #000000;
+  color-scheme: dark;
+}
+
+:root[data-dengta-appearance="night"] body,
+:root[data-dengta-appearance="night"] #root,
+:root[data-dengta-appearance="night"] .app-shell,
+:root[data-dengta-appearance="night"] .view-content,
+:root[data-dengta-appearance="night"] .celestial-backdrop {
+  color: #f5f5f7;
+  background: #000000;
+}
+
+:root[data-dengta-appearance="night"] .main-panel,
+:root[data-dengta-appearance="night"] .feature-page,
+:root[data-dengta-appearance="night"] .settings-page {
+  color: #f5f5f7;
+}
+
+:root[data-dengta-appearance="night"] .topbar,
+:root[data-dengta-appearance="night"] .composer-wrap,
+:root[data-dengta-appearance="night"] .settings-sheet-header,
+:root[data-dengta-appearance="night"] .save-bar {
+  border-color: #38383a;
+  color: #f5f5f7;
+  background: rgb(28 28 30 / 0.9);
+}
+
+:root[data-dengta-appearance="night"] .topbar h1,
+:root[data-dengta-appearance="night"] .topbar p,
+:root[data-dengta-appearance="night"] .feature-header h2,
+:root[data-dengta-appearance="night"] .empty-state h2,
+:root[data-dengta-appearance="night"] .centered-feature h2,
+:root[data-dengta-appearance="night"] .nursery-hero h2,
+:root[data-dengta-appearance="night"] .settings-page > h2,
+:root[data-dengta-appearance="night"] .settings-card h3,
+:root[data-dengta-appearance="night"] .settings-sheet-header h2 {
+  color: #f5f5f7;
+}
+
+:root[data-dengta-appearance="night"] .ambient-context-badge,
+:root[data-dengta-appearance="night"] .ambient-context-badge:not(.is-minimized),
+:root[data-dengta-appearance="night"] .ambient-context-badge.is-minimized,
+:root[data-dengta-appearance="night"] .message-row.assistant .message-bubble,
+:root[data-dengta-appearance="night"] .composer,
+:root[data-dengta-appearance="night"] .composer-tool-menu,
+:root[data-dengta-appearance="night"] .sticker-picker,
+:root[data-dengta-appearance="night"] .moment-card,
+:root[data-dengta-appearance="night"] .diary-card,
+:root[data-dengta-appearance="night"] .memory-card,
+:root[data-dengta-appearance="night"] .profile-card,
+:root[data-dengta-appearance="night"] .settings-card,
+:root[data-dengta-appearance="night"] .notification-feature-panel,
+:root[data-dengta-appearance="night"] .device-activity-panel,
+:root[data-dengta-appearance="night"] .screen-glance-panel,
+:root[data-dengta-appearance="night"] .nursery-state-grid,
+:root[data-dengta-appearance="night"] .nursery-speech-form,
+:root[data-dengta-appearance="night"] .nursery-care-grid > button,
+:root[data-dengta-appearance="night"] .nursery-bonds,
+:root[data-dengta-appearance="night"] .nursery-album,
+:root[data-dengta-appearance="night"] .nursery-portrait,
+:root[data-dengta-appearance="night"] .nursery-empty-state,
+:root[data-dengta-appearance="night"] .nursery-birth-scene,
+:root[data-dengta-appearance="night"] .provider-center-card,
+:root[data-dengta-appearance="night"] .mcp-card,
+:root[data-dengta-appearance="night"] .dialog-card {
+  border-color: #48484a;
+  color: #f5f5f7;
+  background: #1c1c1e;
+}
+
+:root[data-dengta-appearance="night"] .ambient-context-time,
+:root[data-dengta-appearance="night"] .ambient-context-weather,
+:root[data-dengta-appearance="night"] .ambient-context-weather-copy,
+:root[data-dengta-appearance="night"] .message-row.assistant .message-bubble,
+:root[data-dengta-appearance="night"] .message-content,
+:root[data-dengta-appearance="night"] .composer textarea,
+:root[data-dengta-appearance="night"] .settings-grid label,
+:root[data-dengta-appearance="night"] .dialog-card h2,
+:root[data-dengta-appearance="night"] .dialog-card p {
+  color: #f5f5f7;
+}
+
+:root[data-dengta-appearance="night"] .message-reference-block,
+:root[data-dengta-appearance="night"] .thinking-panel,
+:root[data-dengta-appearance="night"] .composer-message-reference,
+:root[data-dengta-appearance="night"] .composer-tool-grid > button,
+:root[data-dengta-appearance="night"] .sticker-picker button,
+:root[data-dengta-appearance="night"] .settings-grid input,
+:root[data-dengta-appearance="night"] .settings-grid textarea,
+:root[data-dengta-appearance="night"] .settings-grid select,
+:root[data-dengta-appearance="night"] .nursery-name-form input,
+:root[data-dengta-appearance="night"] .nursery-speech-composer input,
+:root[data-dengta-appearance="night"] .dialog-card input {
+  border-color: #48484a;
+  color: #f5f5f7;
+  background: #2c2c2e;
+}
+
+:root[data-dengta-appearance="night"] .settings-sheet,
+:root[data-dengta-appearance="night"] .settings-sheet-scroll {
+  border-color: #48484a;
+  color: #f5f5f7;
+  background: #000000;
+}
+
+:root[data-dengta-appearance="night"] .chat-attach-button,
+:root[data-dengta-appearance="night"] .voice-record-button,
+:root[data-dengta-appearance="night"] .menu-button,
+:root[data-dengta-appearance="night"] .settings-gear-button {
+  color: #f5f5f7;
+  background: #3a3a3c;
+}
+
+/* Mobile navigation stays in the left sidebar opened from the top bar. */
+@media (max-width: 820px), (max-height: 500px) and (max-width: 900px) {
+  :root {
+    --mobile-nav-reserved-height: 0px;
+  }
+
+  .app-shell {
+    display: block;
+    background: var(--apple-parchment);
+  }
+
+  .sidebar {
+    width: min(86vw, 320px);
+    border-right: 1px solid #2c2c2e;
+    box-shadow: 20px 0 60px rgb(0 0 0 / 0.3);
+  }
+
+  .topbar {
+    min-height: calc(50px + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) 12px 0;
+  }
+
+  .menu-button {
+    display: grid;
+    place-items: center;
+  }
+
+  .new-chat-label {
+    display: none;
+  }
+
+  .new-chat-top {
+    width: 36px;
+    min-width: 36px;
+    padding: 0;
+    border-radius: 50%;
+  }
+
+  .chat-presence-stack {
+    grid-template-columns: 1fr;
+  }
+
+  .status-summary {
+    min-height: 64px;
+    padding: 11px 14px;
+  }
+
+  .ambient-context-badge,
+  .ambient-context-badge:not(.is-minimized),
+  .ambient-context-badge.is-minimized {
+    min-height: 60px;
+  }
+
+  .message-list {
+    padding: 16px 12px 14px;
+  }
+
+  .message-column {
+    max-width: min(86%, 720px);
+  }
+
+  .message-avatar {
+    width: 30px;
+    height: 30px;
+  }
+
+  .message-bubble,
+  .message-row.assistant .message-bubble,
+  .message-row.user .message-bubble {
+    padding: 12px 14px 10px;
+    font-size: 15.5px;
+  }
+
+  .composer-wrap {
+    padding: 8px 10px max(8px, env(safe-area-inset-bottom));
+  }
+
+  .composer {
+    min-height: 50px;
+  }
+
+  .mobile-edge-navigation,
+  .mobile-edge-navigation.is-open {
+    display: none;
+  }
+
+  .feature-page,
+  .settings-page {
+    padding: 16px 12px max(16px, env(safe-area-inset-bottom));
+  }
+
+  .moments-journal-hero,
+  .diary-journal-hero {
+    min-height: 0;
+    margin: -16px -12px 16px;
+  }
+
+  .moments-journal-hero > div,
+  .diary-journal-hero > div {
+    width: 100%;
+    padding: 22px 16px 20px;
+  }
+
+  .moments-journal-hero h2,
+  .diary-journal-hero h2 {
+    font-size: 25px;
+  }
+
+  .settings-sheet {
+    width: 100%;
+    max-width: none;
+    border-left: 0;
+    border-radius: 0;
+  }
+
+  .settings-sheet-header {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+@media (max-width: 420px) {
+  .topbar-context p {
+    max-width: 42vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .status-mini-vitals {
+    display: none;
+  }
+
+  .ambient-context-badge:not(.is-minimized) {
+    grid-template-columns: minmax(0, 0.9fr) 1px minmax(0, 1.1fr);
+    padding: 9px 12px;
+  }
+
+  .ambient-context-time time {
+    font-size: 20px;
+  }
+
+  .settings-card {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 340px) {
+  .message-column {
+    max-width: 88%;
+  }
+
+  .mobile-nav button small {
+    font-size: 8px;
+  }
+
+  .ambient-context-kicker {
+    font-size: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .companion-status,
+  .message-row,
+  .feature-page,
+  .settings-sheet {
+    animation: none;
+  }
+}
+
+/* Side-collapsible companion signal */
+.status-minimize-button {
+  position: absolute;
+  z-index: 6;
+  top: 50%;
+  right: 8px;
+  display: grid;
+  width: 28px;
+  height: 38px;
+  place-items: center;
+  padding: 0;
+  transform: translateY(-50%);
+  border: 1px solid rgb(255 255 255 / 0.16);
+  border-radius: 8px;
+  color: #d1d1d6;
+  background: rgb(255 255 255 / 0.08);
+  font-size: 22px;
+}
+
+.status-summary {
+  padding-right: 46px;
+}
+
+.chat-presence-stack:has(.companion-status.minimized) {
+  grid-template-columns: 52px minmax(0, 1fr);
+}
+
+.chat-presence-stack:has(.companion-status.minimized) .ambient-context-badge,
+.chat-presence-stack:has(.companion-status.minimized) .ambient-context-badge:not(.is-minimized),
+.chat-presence-stack:has(.companion-status.minimized) .ambient-context-badge.is-minimized {
+  height: 72px;
+  min-height: 72px;
+  max-height: 72px;
+  overflow: hidden;
+}
+
+.companion-status.minimized,
+.companion-status.minimized.high-energy,
+.companion-status.minimized.low-energy {
+  min-width: 52px;
+  min-height: 60px;
+  max-height: 72px;
+  border-right: 1px solid var(--apple-divider);
+}
+
+.status-restore-button {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-height: 60px;
+  grid-template-rows: 1fr auto;
+  grid-template-columns: 1fr auto;
+  place-items: center;
+  gap: 0;
+  padding: 8px 7px;
+  border: 0;
+  color: #ffffff;
+  background: transparent;
+}
+
+.status-restore-mark {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  grid-column: 1 / -1;
+  place-items: center;
+  border-radius: 50%;
+  color: #1c1c1e;
+  background: #ffffff;
+  font-family: Georgia, serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.status-restore-signal {
+  width: 7px;
+  height: 7px;
+  justify-self: end;
+  border-radius: 50%;
+  background: #30d158;
+}
+
+.status-restore-chevron {
+  justify-self: start;
+  color: #a1a1a6;
+  font-size: 17px;
+}
+
+/* Native intimate duel */
+.intimate-duel {
+  width: min(100%, 920px);
+  min-height: 100%;
+  margin: 0 auto;
+  padding: 18px clamp(12px, 3vw, 28px) 32px;
+  color: #f2f2f7;
+  background: #0b090d;
+}
+
+.duel-stage-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.duel-stage-header span {
+  color: #8e8e93;
+  font-size: 10px;
+  letter-spacing: 0;
+}
+
+.duel-stage-header h2 {
+  margin: 3px 0 0;
+  color: #f2f2f7;
+  font-size: 21px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.duel-restart {
+  min-height: 36px;
+  padding: 0 13px;
+  border: 1px solid #3a353d;
+  border-radius: 8px;
+  color: #e5e5ea;
+  background: #1c191f;
+}
+
+.duel-fighters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.duel-fighter-card {
+  display: grid;
+  gap: 13px;
+  padding: 15px;
+  border: 1px solid #322d35;
+  border-radius: 8px;
+  background: #17141a;
+}
+
+.duel-fighter-card.player {
+  --duel-accent: #8db49b;
+}
+
+.duel-fighter-card.companion {
+  --duel-accent: #cf89a6;
+}
+
+.duel-fighter-card > header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.duel-fighter-card header > div {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.duel-fighter-card header strong {
+  overflow: hidden;
+  color: #f2f2f7;
+  font-size: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.duel-fighter-card header small {
+  color: var(--duel-accent);
+  font-size: 9px;
+}
+
+.duel-avatar {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--duel-accent) 72%, #ffffff);
+  border-radius: 50%;
+  color: #f2f2f7;
+  background: #242029;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.duel-meter-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 5px 8px;
+}
+
+.duel-meter-row > span,
+.duel-meter-row > strong {
+  color: #aea8b1;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.duel-meter {
+  overflow: hidden;
+  height: 8px;
+  grid-column: 1 / -1;
+  border-radius: 4px;
+  background: #262229;
+}
+
+.duel-meter > span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: #88ad94;
+  transition: width 320ms ease;
+}
+
+.duel-meter-row.pleasure .duel-meter > span {
+  background: #cc87a3;
+}
+
+.duel-meter-row.warning .duel-meter {
+  box-shadow: 0 0 0 1px rgb(255 69 87 / 0.56), 0 0 16px rgb(255 69 87 / 0.22);
+}
+
+.duel-meter-row.warning .duel-meter > span {
+  background: #ff5267;
+  animation: duel-warning-pulse 900ms ease-in-out infinite alternate;
+}
+
+.duel-log {
+  min-height: 168px;
+  max-height: min(31vh, 300px);
+  margin-top: 10px;
+  overflow-y: auto;
+  padding: 13px 15px;
+  border: 1px solid #322d35;
+  border-radius: 8px;
+  background: #121015;
+  overscroll-behavior: contain;
+}
+
+.duel-log article + article {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #29242c;
+}
+
+.duel-log article small {
+  color: #89838d;
+  font-size: 10px;
+}
+
+.duel-log article p {
+  margin: 5px 0 0;
+  color: #d8d2da;
+  font-size: 14px;
+  line-height: 1.72;
+  white-space: pre-wrap;
+}
+
+.duel-log article.result p {
+  color: #e4acc2;
+}
+
+.duel-narrating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  color: #9b959e;
+  font-size: 12px;
+}
+
+.duel-narrating > span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #cf89a6;
+  animation: duel-warning-pulse 700ms ease-in-out infinite alternate;
+}
+
+.duel-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px solid #5b4851;
+  border-radius: 8px;
+  color: #e1c9d2;
+  background: #251b21;
+  font-size: 12px;
+}
+
+.duel-notice button {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font-size: 18px;
+}
+
+.duel-skills {
+  margin-top: 14px;
+}
+
+.duel-visible-reaction {
+  display: grid;
+  gap: 4px;
+  margin: 10px 0 12px;
+  padding: 10px 12px;
+  border-left: 3px solid rgba(214, 125, 165, 0.72);
+  background: rgba(214, 125, 165, 0.09);
+}
+
+.duel-visible-reaction small {
+  color: rgba(142, 72, 105, 0.78);
+  font-size: 11px;
+}
+
+.duel-visible-reaction span {
+  color: inherit;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.duel-skills h3 {
+  margin: 0 0 9px;
+  color: #8e8e93;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.duel-skill-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.duel-skill-grid button {
+  display: grid;
+  min-width: 0;
+  min-height: 92px;
+  align-content: space-between;
+  gap: 8px;
+  padding: 11px;
+  border: 1px solid #493542;
+  border-radius: 8px;
+  color: #e9e3eb;
+  background: #1b171d;
+  text-align: left;
+}
+
+.duel-skill-grid button.ultimate {
+  border-color: #61476b;
+  background: #23192a;
+}
+
+.duel-skill-grid button.recover {
+  border-color: #3d5147;
+  background: #17201b;
+}
+
+.duel-skill-grid button:disabled {
+  opacity: 0.42;
+}
+
+.duel-skill-heading {
+  display: flex;
+  min-width: 0;
+  align-items: start;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.duel-skill-heading strong {
+  min-width: 0;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.duel-skill-heading em {
+  flex: 0 0 auto;
+  color: #b98da2;
+  font-size: 10px;
+  font-style: normal;
+}
+
+.duel-skill-grid button > small {
+  color: #8f8992;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+@keyframes duel-warning-pulse {
+  to {
+    opacity: 0.62;
+  }
+}
+
+@media (max-width: 820px) {
+  .chat-presence-stack:has(.companion-status.minimized) {
+    grid-template-columns: 52px minmax(0, 1fr);
+  }
+
+  .companion-status.minimized {
+    margin: 0;
+  }
+
+  .duel-skill-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .intimate-duel {
+    padding: 12px 10px max(24px, env(safe-area-inset-bottom));
+  }
+
+  .duel-fighters {
+    grid-template-columns: 1fr;
+  }
+
+  .duel-fighter-card {
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 8px 12px;
+    padding: 12px;
+  }
+
+  .duel-fighter-card > header {
+    grid-row: 1 / 3;
+    align-self: center;
+  }
+
+  .duel-fighter-card header > div {
+    max-width: 48px;
+  }
+
+  .duel-log {
+    min-height: 142px;
+    max-height: 25vh;
+  }
+
+  .duel-skill-grid button {
+    min-height: 86px;
+  }
+}
+
+@media (max-width: 340px) {
+  .duel-stage-header {
+    align-items: start;
+  }
+
+  .duel-stage-header h2 {
+    font-size: 18px;
+  }
+
+  .duel-fighter-card {
+    grid-template-columns: 78px minmax(0, 1fr);
+  }
+
+  .duel-skill-heading {
+    display: grid;
+  }
+}

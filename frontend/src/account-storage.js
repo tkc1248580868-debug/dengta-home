@@ -1,0 +1,34 @@
+export function accountStorageKey(baseKey, accountScope = "") {
+  const scope = String(accountScope || "").trim();
+  return scope ? `${baseKey}:${scope}` : baseKey;
+}
+
+export function readAccountStorage(
+  storage,
+  baseKey,
+  accountScope = "",
+  { migrateLegacy = false } = {},
+) {
+  const key = accountStorageKey(baseKey, accountScope);
+  const stored = storage?.getItem(key);
+  if (stored !== null && stored !== undefined) return stored;
+  if (!migrateLegacy || key === baseKey) return null;
+
+  const legacy = storage?.getItem(baseKey);
+  if (legacy === null || legacy === undefined) return null;
+  storage?.setItem(key, legacy);
+  storage?.removeItem(baseKey);
+  return legacy;
+}
+
+export function writeAccountStorage(
+  storage,
+  baseKey,
+  accountScope,
+  value,
+) {
+  const key = accountStorageKey(baseKey, accountScope);
+  if (value === null || value === undefined) storage?.removeItem(key);
+  else storage?.setItem(key, String(value));
+  return key;
+}
