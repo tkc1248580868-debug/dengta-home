@@ -55,6 +55,7 @@ function selectedColumns(row, columns) {
 
 function createMemorySupabase(seed) {
     const tables = clone(seed);
+    const queryCounts = {};
     let sequence = 0;
 
     function from(tableName) {
@@ -142,6 +143,7 @@ function createMemorySupabase(seed) {
         }
 
         function execute() {
+            queryCounts[tableName] = (queryCounts[tableName] || 0) + 1;
             let rows = tables[tableName].filter(matches);
             if (state.operation === "insert") {
                 const now = "2026-07-26T08:00:00.000Z";
@@ -189,7 +191,7 @@ function createMemorySupabase(seed) {
         return builder;
     }
 
-    return { from, tables };
+    return { from, tables, queryCounts };
 }
 
 function accountFixture(userId, companionId, email, role = "member") {
@@ -357,6 +359,11 @@ async function testAuthMiddlewareBuildsOwnedScope() {
             companionAId
         );
         assert.equal((await response.json()).active_companion.id, companionAId);
+        assert.equal(
+            adminSupabase.queryCounts.user_profiles,
+            1,
+            "existing accounts should not refetch the same profile"
+        );
     });
 }
 

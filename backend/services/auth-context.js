@@ -56,6 +56,9 @@ async function ensureAccount({
         .maybeSingle();
     if (existingError) throw existingError;
 
+    let profile = existing;
+    let profileChanged = false;
+
     if (!existing) {
         const { error } = await adminSupabase.from("user_profiles").insert({
             id: user.id,
@@ -66,6 +69,7 @@ async function ensureAccount({
             role: isInitialOwner ? "owner" : "member"
         });
         if (error) throw error;
+        profileChanged = true;
     }
 
     if (isInitialOwner && existing?.role !== "owner") {
@@ -74,16 +78,20 @@ async function ensureAccount({
             { p_owner_user_id: user.id }
         );
         if (error) throw error;
+        profileChanged = true;
     }
 
-    const { data: profile, error: profileError } = await adminSupabase
-        .from("user_profiles")
-        .select(
-            "id, email, display_name, role, status, companion_limit, storage_used_bytes, storage_quota_bytes"
-        )
-        .eq("id", user.id)
-        .single();
-    if (profileError) throw profileError;
+    if (profileChanged) {
+        const { data, error } = await adminSupabase
+            .from("user_profiles")
+            .select(
+                "id, email, display_name, role, status, companion_limit, storage_used_bytes, storage_quota_bytes"
+            )
+            .eq("id", user.id)
+            .single();
+        if (error) throw error;
+        profile = data;
+    }
     if (profile.status !== "active") {
         throw authError(
             403,
