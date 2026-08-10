@@ -12,7 +12,7 @@ const renderConfig = fs.readFileSync(
     "utf8"
 );
 const backgroundJobWorkflow = fs.readFileSync(
-    path.join(root, ".github", "workflows", "shadow-push.yml"),
+    path.join(root, "..", ".github", "workflows", "background-jobs.yml"),
     "utf8"
 );
 
@@ -51,7 +51,7 @@ assert.match(
 );
 assert.match(
     backgroundJobWorkflow,
-    /DENGTA_BACKGROUND_JOB_TRIGGER_SECRET is not configured; skipping this tick\.[\s\S]*?exit 0/
+    /DENGTA_BACKEND_URL or DENGTA_BACKGROUND_JOB_TRIGGER_SECRET is not configured; skipping this tick\.[\s\S]*?exit 0/
 );
 assert.match(
     backgroundJobWorkflow,

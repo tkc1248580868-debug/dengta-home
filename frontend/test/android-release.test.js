@@ -14,7 +14,7 @@ const variablesGradle = fs.readFileSync(
   "utf8",
 );
 const androidWorkflow = fs.readFileSync(
-  path.join(projectRoot, ".github", "workflows", "android-apk.yml"),
+  path.join(projectRoot, "..", ".github", "workflows", "android-apk.yml"),
   "utf8",
 );
 const mainActivity = fs.readFileSync(
