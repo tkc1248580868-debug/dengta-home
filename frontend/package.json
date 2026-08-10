@@ -1,7 +1,7 @@
 {
   "name": "dengta-home-react",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.8.11",
   "type": "module",
   "scripts": {
     "pretest": "node --test test/mobile-chat-shell.test.js && node test/settings-folders.test.js",
