@@ -9,8 +9,8 @@ android {
         applicationId "home.dengta.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 33
-        versionName "2.8.11"
+        versionCode 34
+        versionName "2.8.12"
         resValue "string", "backend_api_url", backendApiUrl
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {

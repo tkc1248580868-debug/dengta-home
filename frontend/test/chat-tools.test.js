@@ -397,6 +397,14 @@ assert.equal(
   }),
   true,
 );
+assert.equal(
+  shouldRestoreAttachmentDrafts({
+    requestWasAborted: true,
+    cancelReason: "user-cancel",
+  }),
+  true,
+  "an explicit stop must preserve the draft for an idempotent retry",
+);
 
 {
   const imageFile = { name: "照片.png", type: "image/png", size: 12 };

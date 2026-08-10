@@ -605,8 +605,18 @@ const composerSendButton = app.match(
 )?.[0];
 assert.match(
   composerSendButton || "",
-  /onPointerDown=\{[\s\S]*?shouldHandleComposerPointerDown[\s\S]*?preventDefault\(\)[\s\S]*?sendMessage\(\)/,
+  /onPointerDown=\{[\s\S]*?shouldHandleComposerPointerDown[\s\S]*?preventDefault\(\)[\s\S]*?handleSendButton\(\)/,
   "a touch on send must dispatch before Android keyboard resize can swallow click",
+);
+assert.match(
+  app,
+  /function handleSendButton\(\)[\s\S]*?isSendingRef\.current[\s\S]*?abortChatRequest\(chatRequestRef, "user-cancel"\)[\s\S]*?sendMessage\(\)/,
+  "the send control must let the user stop a long model request",
+);
+assert.doesNotMatch(
+  composerSendButton || "",
+  /disabled=\{[\s\S]*?\bisSending\s*\|\|/,
+  "the stop control must remain tappable while the model is working",
 );
 assert.doesNotMatch(
   app,

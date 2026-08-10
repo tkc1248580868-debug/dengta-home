@@ -583,7 +583,7 @@ function abortChatRequest(requestRef, reason = "cancelled") {
   if (!request || request.controller.signal.aborted) return;
   request.cancelReason = reason;
   request.controller.abort(reason);
-  if (reason !== "view-change") {
+  if (!["view-change", "user-cancel"].includes(reason)) {
     releaseChatRequestAttachments(request);
   }
 }
@@ -4648,6 +4648,14 @@ function App({ accountControl = null, accountScope = "", userName = "" }) {
     void startupReconnectRef.current?.retryNow("manual");
   }
 
+  function handleSendButton() {
+    if (isSendingRef.current) {
+      abortChatRequest(chatRequestRef, "user-cancel");
+      return;
+    }
+    void sendMessage();
+  }
+
   function renderChat() {
     const latestMessage = messages.at(-1);
     const replySuggestions =
@@ -4659,10 +4667,10 @@ function App({ accountControl = null, accountScope = "", userName = "" }) {
         ? readReplySuggestions(latestMessage)
         : [];
     const attachmentsAtLimit = chatAttachments.length >= 4;
-    const sendButtonLabel = isCompanionResponding
-      ? "互动回应中"
-      : isSending
-        ? "回应中"
+    const sendButtonLabel = isSending
+      ? "停止等待"
+      : isCompanionResponding
+        ? "互动回应中"
         : chatRetryReady
           ? chatRetryIsProcessing
             ? "检查进度"
@@ -4897,17 +4905,20 @@ function App({ accountControl = null, accountScope = "", userName = "" }) {
                 onPointerDown={(event) => {
                   if (!shouldHandleComposerPointerDown(event)) return;
                   event.preventDefault();
-                  void sendMessage();
+                  handleSendButton();
                 }}
-                onClick={() => void sendMessage()}
+                onClick={handleSendButton}
                 disabled={
-                  (!message.trim() && chatAttachments.length === 0) ||
-                  isSending ||
                   isCompanionResponding ||
-                  isVoiceInputBusy
+                  isVoiceInputBusy ||
+                  (!isSending &&
+                    !message.trim() &&
+                    chatAttachments.length === 0)
                 }
               >
-                <span className="send-paw-icon" aria-hidden="true">🐾</span>
+                <span className="send-paw-icon" aria-hidden="true">
+                  {isSending ? "■" : "🐾"}
+                </span>
                 <span className="send-button-label">{sendButtonLabel}</span>
               </button>
             </div>

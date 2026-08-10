@@ -253,7 +253,7 @@ export function shouldRestoreAttachmentDrafts({
   cancelReason = "",
 } = {}) {
   if (!requestWasAborted) return true;
-  return cancelReason === "view-change";
+  return ["view-change", "user-cancel"].includes(cancelReason);
 }
 
 export function restoreAttachmentDrafts(sent = [], current = [], limit = 4) {
