@@ -2898,7 +2898,8 @@ function App({ accountControl = null, accountScope = "", userName = "" }) {
   companionInteractionHandlerRef.current = registerCompanionInteraction;
 
   async function requestVisibleInnerMonologue(item) {
-    const sessionId = activeSessionIdRef.current;
+    const sessionId =
+      item?.conversation_id || item?.session_id || activeSessionIdRef.current;
     const { recoverSynchronizedAssistantMessage } = await import(
       "./inner-monologue-sync.js"
     );
@@ -3501,6 +3502,7 @@ function App({ accountControl = null, accountScope = "", userName = "" }) {
         const assistantDraft = {
           id: localAssistantId,
           role: "assistant",
+          conversation_id: sessionId,
           content: "",
           created_at: new Date().toISOString(),
           isStreaming: true,

@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import "./cozy-theme.css";
@@ -8,7 +8,7 @@ import "./apple-ui.css";
 import "./sun-glass-ui.css";
 import "./jelly-motion.css";
 import "./sun-glass-chat.css";
-import App from "./App.jsx";
+import App from "./LazyApp.jsx";
 import AuthGate from "./AuthGate.jsx";
 import DengTaPrelude from "./DengTaPrelude.jsx";
 import { prewarmBackend } from "./backend-prewarm.js";
@@ -20,12 +20,14 @@ createRoot(document.getElementById("root")).render(
     <DengTaPrelude />
     <AuthGate>
       {({ accountControl, snapshot }) => (
-        <App
-          key={snapshot.user?.id}
-          accountControl={accountControl}
-          accountScope={snapshot.user?.id || ""}
-          userName={snapshot.user?.displayName}
-        />
+        <Suspense fallback={null}>
+          <App
+            key={snapshot.user?.id}
+            accountControl={accountControl}
+            accountScope={snapshot.user?.id || ""}
+            userName={snapshot.user?.displayName}
+          />
+        </Suspense>
       )}
     </AuthGate>
   </StrictMode>,

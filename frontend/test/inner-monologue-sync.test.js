@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   findSynchronizedAssistantMessage,
   isSynchronizedChatMessage,
@@ -55,6 +56,32 @@ assert.equal(
     })
   ).message?.id,
   synchronizedMessage.id,
+);
+
+let eventualLoads = 0;
+const eventuallyRecovered = await recoverSynchronizedAssistantMessage({
+  message: localMessage,
+  sessionId: "11111111-1111-4111-8111-111111111111",
+  loadMessages: async () => {
+    eventualLoads += 1;
+    return eventualLoads === 1 ? [] : [synchronizedMessage];
+  },
+});
+assert.equal(eventuallyRecovered.error || "", "");
+assert.equal(eventuallyRecovered.message?.id, synchronizedMessage.id);
+assert.ok(
+  eventualLoads >= 2,
+  "会话历史尚未可见时应在短窗口内再次确认同步",
+);
+
+const messageExtrasSource = readFileSync(
+  new URL("../src/ChatMessageExtras.jsx", import.meta.url),
+  "utf8",
+);
+assert.doesNotMatch(
+  messageExtrasSource,
+  /canRequestInnerMonologue\s*=\s*[\s\S]{0,180}?\^\[0-9a-f\]/,
+  "已完成的本地消息也应能进入同步恢复流程",
 );
 
 console.log("inner monologue synchronization recovery checks passed");

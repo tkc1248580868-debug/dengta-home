@@ -1,5 +1,15 @@
+import { apiRequest } from "./api.js";
+import { hydrateChatHistory } from "./chat-history.js";
+import { applyStoredMessageReferences } from "./message-reference.js";
+
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const DEFAULT_RECOVERY_ATTEMPTS = 3;
+const DEFAULT_RECOVERY_DELAY_MS = 160;
+
+function wait(milliseconds) {
+  return new Promise((resolve) => globalThis.setTimeout(resolve, milliseconds));
+}
 
 function normalizedText(value) {
   return String(value || "").trim();
@@ -68,6 +78,9 @@ export async function recoverSynchronizedAssistantMessage({
       sessionId,
     );
   },
+  attempts = DEFAULT_RECOVERY_ATTEMPTS,
+  retryDelayMs = DEFAULT_RECOVERY_DELAY_MS,
+  waitForRetry = wait,
 } = {}) {
   const pending = "回复同步中，请稍后再试。";
   if (!sessionId) return { message: null, messages: null, error: pending };
@@ -75,17 +88,20 @@ export async function recoverSynchronizedAssistantMessage({
     return { message, messages: null };
   }
   try {
-    const messages = await loadMessages();
-    const recovered = findSynchronizedAssistantMessage(message, messages);
-    return {
-      message: recovered,
-      messages,
-      error: recovered ? "" : pending,
-    };
+    let messages = [];
+    const maximumAttempts = Math.max(1, Number(attempts) || 1);
+    for (let attempt = 0; attempt < maximumAttempts; attempt += 1) {
+      if (attempt > 1 && retryDelayMs > 0) {
+        await waitForRetry(retryDelayMs);
+      }
+      messages = await loadMessages(sessionId);
+      const recovered = findSynchronizedAssistantMessage(message, messages);
+      if (recovered) {
+        return { message: recovered, messages, error: "" };
+      }
+    }
+    return { message: null, messages, error: pending };
   } catch {
     return { message: null, messages: null, error: pending };
   }
 }
-import { apiRequest } from "./api.js";
-import { hydrateChatHistory } from "./chat-history.js";
-import { applyStoredMessageReferences } from "./message-reference.js";

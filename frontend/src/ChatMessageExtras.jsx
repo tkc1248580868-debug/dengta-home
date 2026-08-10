@@ -178,7 +178,6 @@ export function ThinkingPanel({
   const completed = thinkingPanelCompleted(message);
   const canRequestInnerMonologue =
     completed &&
-    /^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(String(message?.id || "")) &&
     typeof onRequestInnerMonologue === "function";
   const visible =
     !completed ||

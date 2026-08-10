@@ -12,6 +12,10 @@ const main = fs.readFileSync(
   path.join(here, "..", "src", "main.jsx"),
   "utf8",
 );
+const lazyApp = fs.readFileSync(
+  path.join(here, "..", "src", "LazyApp.jsx"),
+  "utf8",
+);
 const app = fs.readFileSync(
   path.join(here, "..", "src", "App.jsx"),
   "utf8",
@@ -22,6 +26,11 @@ const css = fs.readFileSync(
 );
 
 assert.match(main, /<AuthGate>/);
+assert.match(
+  lazyApp,
+  /lazy\(\(\) => import\("\.\/App\.jsx"\)\)/,
+  "the authenticated application must not inflate the login/loading bundle",
+);
 assert.match(main, /<App[\s\S]*accountControl=\{accountControl\}/);
 assert.match(main, /key=\{snapshot\.user\?\.id\}/);
 assert.match(main, /accountScope=\{snapshot\.user\?\.id \|\| ""\}/);
