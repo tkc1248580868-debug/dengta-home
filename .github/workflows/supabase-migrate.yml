@@ -1,0 +1,113 @@
+name: Apply Supabase migrations
+
+# Applies backend/supabase/*.sql to a self-hosted Supabase project in numeric
+# order. This exists so a database can be initialised without pasting ~130KB of
+# SQL into the dashboard editor by hand — useful on a phone, and repeatable
+# afterwards, since every migration is written to be safe to re-run.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "apply" to confirm running the migrations.'
+        required: true
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check confirmation
+        run: |
+          if [ "${{ inputs.confirm }}" != "apply" ]; then
+            echo "请在 confirm 输入框里填 apply 再运行。" >&2
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Check database URL secret
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "缺少 Repository Secret：SUPABASE_DB_URL" >&2
+            echo "在 Settings > Secrets and variables > Actions 添加，值取自 Supabase 的 Connect 对话框。" >&2
+            exit 1
+          fi
+          case "$SUPABASE_DB_URL" in
+            postgres://*|postgresql://*) ;;
+            *)
+              echo "SUPABASE_DB_URL 必须是 postgres:// 或 postgresql:// 开头的连接串。" >&2
+              exit 1
+              ;;
+          esac
+          # GitHub runners have no IPv6, and Supabase's direct host is
+          # IPv6-only, so the pooler host is the one that actually connects.
+          case "$SUPABASE_DB_URL" in
+            *pooler.supabase.com*) ;;
+            *)
+              echo "::warning::连接串似乎不是 pooler 主机。GitHub 跑在 IPv4 上，" \
+                   "请在 Supabase 的 Connect 里选 Session pooler 那一条。"
+              ;;
+          esac
+
+      - name: Verify connection
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          psql "$SUPABASE_DB_URL" -Atqc "select 'connected to ' || current_database();"
+
+      - name: Apply migrations in order
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -u
+          failed=0
+          {
+            echo "## 数据库迁移结果"
+            echo
+            echo "| 脚本 | 结果 |"
+            echo "| --- | --- |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          for file in backend/supabase/*.sql; do
+            name="$(basename "$file")"
+            if output="$(psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -q -f "$file" 2>&1)"; then
+              echo "✅ $name"
+              echo "| \`$name\` | ✅ |" >> "$GITHUB_STEP_SUMMARY"
+            else
+              failed=$((failed + 1))
+              echo "❌ $name"
+              # Migration files contain no secrets, so their errors are safe to
+              # print; the connection string is never echoed.
+              echo "$output" | grep -i "error" | head -5
+              echo "| \`$name\` | ❌ 见日志 |" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done
+
+          echo >> "$GITHUB_STEP_SUMMARY"
+          if [ "$failed" -ne 0 ]; then
+            echo "**$failed 个脚本失败。**" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo "**全部通过。**" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Report what was created
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          tables="$(psql "$SUPABASE_DB_URL" -Atqc "select count(*) from information_schema.tables where table_schema='public' and table_type='BASE TABLE';")"
+          secured="$(psql "$SUPABASE_DB_URL" -Atqc "select count(*) from pg_tables where schemaname='public' and rowsecurity=true;")"
+          {
+            echo "建出 **$tables** 张表，其中 **$secured** 张启用了行级安全。"
+            echo
+            echo "两个数字应该相等且为 34。"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "tables=$tables secured=$secured"

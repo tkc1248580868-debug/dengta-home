@@ -9,8 +9,21 @@ DengTa Home 的安卓端是 Capacitor 原生壳 + React 网页包，应用编号
 | --- | --- |
 | 手机系统 | Android 12（API 31）或更高 |
 | 后端 | 已部署并可从公网访问的 `backend/`，必须是 `https://` |
-| 数据库 | 已按编号执行完 `backend/supabase/` 全部迁移的 Supabase 项目 |
+| 数据库 | 已按编号执行完 `backend/supabase/` 全部迁移的 Supabase 项目（见下） |
 | 本地构建（可选） | Node.js 24、JDK 21、Android SDK（platform 36、build-tools 36） |
+
+### 执行数据库迁移
+
+`backend/supabase/` 下有 27 个 SQL 文件，必须按编号顺序执行。两种方式：
+
+- **在 Supabase 后台**：SQL Editor 里依次粘贴执行。
+- **用 GitHub Actions**（不必手工粘贴，适合只有手机的情况）：在 Repository Secrets
+  添加 `SUPABASE_DB_URL`，值取自 Supabase 的 `Connect` 对话框。**必须选
+  Session pooler 那一条** —— GitHub 运行器只有 IPv4，而 Supabase 的直连主机是
+  IPv6-only。然后运行 `Apply Supabase migrations` 工作流，在 `confirm` 里填
+  `apply`。跑完的摘要会报告建了多少张表、多少张启用了行级安全，两个数字都应是 34。
+
+迁移文件都写成了可重复执行的形式，重复跑不会破坏已有数据。
 
 **后端必须是 HTTPS。** 安卓壳在 `frontend/capacitor.config.json` 里设置了
 `cleartext: false` 与 `allowMixedContent: false`，应用不会连接 `http://` 地址。
