@@ -23,7 +23,9 @@ Deploy `frontend/` as a Vite static app. Configure `VITE_API_URL`, `VITE_SUPABAS
 
 ## Android
 
-Build the web bundle, run Capacitor sync, then build from `frontend/android`. Set `DENGTA_BACKEND_API_URL` when invoking Gradle so background notifications and screen sharing use your own backend. Release signing material is intentionally not included in this repository.
+Run `npm run android:apk` from `frontend/` — it validates the toolchain and `VITE_*` values, builds the web bundle, runs Capacitor sync and invokes Gradle with `DENGTA_BACKEND_API_URL` set, so background notifications and screen sharing reach your own backend. The step-by-step guide, including installing on a phone and release signing, is in [ANDROID.md](ANDROID.md).
+
+The backend must be reachable over `https://`: the Android shell sets `cleartext: false`. Release signing material is intentionally not included in this repository; `frontend/android/keystore.properties` and keystore files are git-ignored.
 
 The manual GitHub Actions APK workflow requires three Repository Secrets: `VITE_API_URL`, `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`. The anon key is intended for client use, but it must still be paired with tested Row Level Security. The workflow reuses `VITE_API_URL` as `DENGTA_BACKEND_API_URL` for native background services.
 

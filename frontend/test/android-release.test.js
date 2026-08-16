@@ -48,6 +48,23 @@ const screenGlanceService = fs.readFileSync(
   "utf8",
 );
 
+const androidGuide = fs.readFileSync(
+  path.join(projectRoot, "..", "docs", "ANDROID.md"),
+  "utf8",
+);
+const androidIgnore = fs.readFileSync(
+  path.join(projectRoot, "android", ".gitignore"),
+  "utf8",
+);
+const buildScript = fs.readFileSync(
+  path.join(projectRoot, "scripts", "build-android.sh"),
+  "utf8",
+);
+const buildScriptWindows = fs.readFileSync(
+  path.join(projectRoot, "scripts", "build-android.ps1"),
+  "utf8",
+);
+
 assert.match(buildGradle, /applicationId "home\.dengta\.app"/);
 assert.match(buildGradle, /versionCode 34\b/);
 assert.match(buildGradle, /versionName "2\.8\.12"/);
@@ -79,4 +96,32 @@ assert.doesNotMatch(
   /小灯|桃桃/,
   "native background notifications must not ship a private companion identity",
 );
+
+// Release signing stays opt-in and local: the build must fall back to an
+// unsigned release when keystore.properties is absent, and the repository must
+// refuse to track signing material.
+assert.match(buildGradle, /rootProject\.file\("keystore\.properties"\)/);
+assert.match(buildGradle, /if \(hasReleaseSigning\) \{\s*signingConfig signingConfigs\.release/);
+for (const ignored of ["*.jks", "*.keystore", "*.p12", "keystore.properties"]) {
+  assert.ok(
+    androidIgnore.split(/\r?\n/).includes(ignored),
+    `android/.gitignore must exclude ${ignored}`,
+  );
+}
+
+// Both build scripts must refuse a cleartext backend, because the Capacitor
+// shell sets cleartext=false and such an APK cannot reach its backend at all.
+for (const [name, script] of [
+  ["build-android.sh", buildScript],
+  ["build-android.ps1", buildScriptWindows],
+]) {
+  assert.match(script, /VITE_SUPABASE_ANON_KEY/, `${name} must require the anon key`);
+  assert.match(script, /DENGTA_BACKEND_API_URL/, `${name} must pass the native backend URL`);
+  assert.match(script, /cleartext=false/, `${name} must reject http:// backends`);
+}
+
+assert.match(androidWorkflow, /VITE_API_URL must use https:\/\//);
+assert.match(androidGuide, /minSdkVersion|API 31/);
+assert.match(androidGuide, /keystore\.properties/);
+
 console.log("Android 2.8.12 cancellable-generation release tests passed");

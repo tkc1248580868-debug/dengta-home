@@ -28,14 +28,17 @@ npm run build
 
 Android 原生壳使用 Capacitor，应用编号为 `home.dengta.app`，最低支持 Android 12（API 31）。
 
-同步网页资源：
+一条命令构建 APK（先在 `.env.local` 填好 `VITE_API_URL`、`VITE_SUPABASE_URL`、`VITE_SUPABASE_ANON_KEY`）：
 
 ```cmd
-npm run build
-npm run android:sync
+powershell -ExecutionPolicy Bypass -File scripts\build-android.ps1
 ```
 
+Linux 与 macOS 用 `npm run android:apk`。只想同步网页资源时仍可单独执行 `npm run build` 与 `npm run android:sync`。
+
 仓库根目录的 `.github/workflows/android-apk.yml` 可手动构建调试版 APK，并上传名为 `DengTa-home-android-debug` 的构建产物。运行前需在 GitHub Repository Secrets 配置 `VITE_API_URL`、`VITE_SUPABASE_URL` 和 `VITE_SUPABASE_ANON_KEY`；Gradle 会复用 `VITE_API_URL` 生成原生后台服务地址。调试版仅用于测试，正式发布前需要单独配置发布签名。
+
+后端必须是 `https://`：安卓壳设置了 `cleartext: false`，不会连接明文地址。完整部署与安装说明见 [docs/ANDROID.md](../docs/ANDROID.md)。
 
 ## 密钥
 

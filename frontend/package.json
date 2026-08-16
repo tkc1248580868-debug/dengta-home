@@ -9,6 +9,7 @@
     "dev": "vite",
     "build": "vite build",
     "android:sync": "cap sync android",
+    "android:apk": "bash scripts/build-android.sh",
     "lint": "eslint .",
     "test:companion-interaction": "node test/companion-interaction.test.js",
     "test:intimate-duel": "node test/intimate-duel.test.js",

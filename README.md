@@ -99,13 +99,15 @@ VITE_SUPABASE_ANON_KEY=
 
 ```bash
 cd frontend
-npm run build
-npm run android:sync
-cd android
-./gradlew assembleDebug
+npm run android:apk
 ```
 
-Windows 使用 `gradlew.bat assembleDebug`。
+该脚本会校验工具链与 `VITE_*` 变量，然后依次执行网页构建、Capacitor 同步和
+Gradle 打包，最后打印 APK 路径。Windows 使用
+`powershell -ExecutionPolicy Bypass -File scripts\build-android.ps1`。
+
+不想配置本地安卓环境时，可以运行仓库的 `Build Android APK` 工作流下载调试版 APK。
+完整流程、安装步骤、发布签名和排查清单见 [安卓部署说明](docs/ANDROID.md)。
 
 ## 测试
 
