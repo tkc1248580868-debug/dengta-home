@@ -17,11 +17,18 @@ DengTa Home 的安卓端是 Capacitor 原生壳 + React 网页包，应用编号
 `backend/supabase/` 下有 27 个 SQL 文件，必须按编号顺序执行。两种方式：
 
 - **在 Supabase 后台**：SQL Editor 里依次粘贴执行。
-- **用 GitHub Actions**（不必手工粘贴，适合只有手机的情况）：在 Repository Secrets
-  添加 `SUPABASE_DB_URL`，值取自 Supabase 的 `Connect` 对话框。**必须选
-  Session pooler 那一条** —— GitHub 运行器只有 IPv4，而 Supabase 的直连主机是
-  IPv6-only。然后运行 `Apply Supabase migrations` 工作流，在 `confirm` 里填
-  `apply`。跑完的摘要会报告建了多少张表、多少张启用了行级安全，两个数字都应是 34。
+- **用 GitHub Actions**（不必手工粘贴，适合只有手机的情况）：添加两个 Repository Secret，
+  然后运行 `Apply Supabase migrations` 工作流，在 `confirm` 里填 `apply`。
+
+  | Secret | 值 |
+  | --- | --- |
+  | `SUPABASE_DB_URL` | Supabase `Connect` 对话框里的连接串，**照抄即可**，`[YOUR-PASSWORD]` 占位符不用管 |
+  | `SUPABASE_DB_PASSWORD` | 数据库密码本身 |
+
+  连接串**必须选 Session pooler 那一条** —— GitHub 运行器只有 IPv4，而 Supabase 的
+  直连主机是 IPv6-only。工作流会把密码 URL 编码后填进占位符，所以密码里带
+  `@ : / # ? &` 之类的字符也不会破坏连接串；连接串和密码都不会出现在日志里。
+  跑完的摘要会报告建了多少张表、多少张启用了行级安全，两个数字都应是 34。
 
 迁移文件都写成了可重复执行的形式，重复跑不会破坏已有数据。
 

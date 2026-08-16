@@ -32,9 +32,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Check database URL secret
+      - name: Resolve connection string
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
           if [ -z "$SUPABASE_DB_URL" ]; then
             echo "缺少 Repository Secret：SUPABASE_DB_URL" >&2
@@ -58,15 +59,36 @@ jobs:
               ;;
           esac
 
+          # The dashboard hands out the string with a [YOUR-PASSWORD] placeholder.
+          # Substituting it here means the password can be pasted as its own
+          # secret, with no hand-editing of the string on a phone keyboard, and
+          # it gets URL-encoded so punctuation in the password cannot corrupt
+          # the URI — the dashboard warns about exactly that.
+          url="$SUPABASE_DB_URL"
+          case "$url" in
+            *"[YOUR-PASSWORD]"*)
+              if [ -z "$SUPABASE_DB_PASSWORD" ]; then
+                echo "连接串里还留着 [YOUR-PASSWORD] 占位符。" >&2
+                echo "请再加一个 Repository Secret：SUPABASE_DB_PASSWORD，值是数据库密码本身。" >&2
+                exit 1
+              fi
+              encoded="$(python3 -c 'import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1], safe=""))' "$SUPABASE_DB_PASSWORD")"
+              echo "::add-mask::$encoded"
+              url="${url//\[YOUR-PASSWORD\]/$encoded}"
+              echo "已把密码填入连接串。"
+              ;;
+            *)
+              echo "连接串里没有占位符，按原样使用。"
+              ;;
+          esac
+          echo "::add-mask::$url"
+          echo "DB_URL=$url" >> "$GITHUB_ENV"
+
       - name: Verify connection
-        env:
-          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
-          psql "$SUPABASE_DB_URL" -Atqc "select 'connected to ' || current_database();"
+          psql "$DB_URL" -Atqc "select 'connected to ' || current_database();"
 
       - name: Apply migrations in order
-        env:
-          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
           set -u
           failed=0
@@ -79,7 +101,7 @@ jobs:
 
           for file in backend/supabase/*.sql; do
             name="$(basename "$file")"
-            if output="$(psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -q -f "$file" 2>&1)"; then
+            if output="$(psql "$DB_URL" -v ON_ERROR_STOP=1 -q -f "$file" 2>&1)"; then
               echo "✅ $name"
               echo "| \`$name\` | ✅ |" >> "$GITHUB_STEP_SUMMARY"
             else
@@ -100,11 +122,9 @@ jobs:
           echo "**全部通过。**" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Report what was created
-        env:
-          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
-          tables="$(psql "$SUPABASE_DB_URL" -Atqc "select count(*) from information_schema.tables where table_schema='public' and table_type='BASE TABLE';")"
-          secured="$(psql "$SUPABASE_DB_URL" -Atqc "select count(*) from pg_tables where schemaname='public' and rowsecurity=true;")"
+          tables="$(psql "$DB_URL" -Atqc "select count(*) from information_schema.tables where table_schema='public' and table_type='BASE TABLE';")"
+          secured="$(psql "$DB_URL" -Atqc "select count(*) from pg_tables where schemaname='public' and rowsecurity=true;")"
           {
             echo "建出 **$tables** 张表，其中 **$secured** 张启用了行级安全。"
             echo
