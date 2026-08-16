@@ -38,9 +38,12 @@ anon key 属于客户端公开值，但必须配合已经启用并测试过的 R
 1. 在仓库 `Settings → Secrets and variables → Actions` 添加三个 Repository Secret：
    `VITE_API_URL`、`VITE_SUPABASE_URL`、`VITE_SUPABASE_ANON_KEY`。
 2. 打开 `Actions → Build Android APK → Run workflow`，选择分支后运行。
-3. 等待约 10 分钟，在该次运行页面底部下载构建产物
-   `DengTa-home-android-debug`（zip 内是 `app-debug.apk`）。
-4. 把 zip 解压后的 APK 传到手机。
+   `publish_release` 默认开启。
+3. 等待约 10 分钟，然后二选一取包：
+   - **手机上推荐**：仓库首页右侧 `Releases` → 最新那条 → 点 `.apk` 附件直接下载安装，不用解压。
+   - 或在该次运行页面底部下载构建产物 `DengTa-home-android-debug`（zip 内是 `app-debug.apk`）。
+
+只想要构建产物、不想每次生成 Release 时，运行前把 `publish_release` 取消勾选即可。
 
 工作流会先跑完整前端测试与 lint，再构建、同步、打包并校验 APK 签名，
 所以任何一步失败都会中止而不会产出半成品包。

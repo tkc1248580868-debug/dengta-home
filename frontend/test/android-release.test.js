@@ -121,6 +121,18 @@ for (const [name, script] of [
 }
 
 assert.match(androidWorkflow, /VITE_API_URL must use https:\/\//);
+
+// A phone can install a release asset by tapping it, but cannot unzip a
+// workflow artifact, so the release path must stay wired up and opt-outable.
+assert.match(androidWorkflow, /permissions:\s*\n\s*contents: write/);
+assert.match(androidWorkflow, /publish_release/);
+assert.match(androidWorkflow, /if: inputs\.publish_release/);
+assert.match(androidWorkflow, /gh release create/);
+assert.match(
+  androidWorkflow,
+  /--prerelease/,
+  "an unsigned debug build must never be published as a stable release",
+);
 assert.match(androidGuide, /minSdkVersion|API 31/);
 assert.match(androidGuide, /keystore\.properties/);
 

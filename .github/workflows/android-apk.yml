@@ -2,9 +2,16 @@ name: Build Android APK
 
 on:
   workflow_dispatch:
+    inputs:
+      publish_release:
+        description: >-
+          Also attach the APK to a prerelease, so it can be downloaded and
+          installed directly on a phone without unzipping an artifact.
+        type: boolean
+        default: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-debug-apk:
@@ -95,3 +102,29 @@ jobs:
           path: frontend/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
+
+      # Artifacts always download as a zip, which is painful on a phone. A
+      # release asset downloads as the .apk itself and can be installed by
+      # tapping it, so a phone-only self-hoster never needs a computer.
+      - name: Publish APK as a prerelease
+        if: inputs.publish_release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="$(node -p "require('./frontend/package.json').version")"
+          tag="android-v${version}-build${{ github.run_number }}"
+          cp frontend/android/app/build/outputs/apk/debug/app-debug.apk \
+            "DengTa-home-${version}-debug.apk"
+          printf '%s\n' \
+            "调试版 APK，由 ${{ github.ref_name }} 分支构建。" \
+            "" \
+            "在手机上直接点下面的 .apk 文件即可安装，不用解压。需要 Android 12 或更高版本。" \
+            "" \
+            "调试版与发布版签名不同，互相不能覆盖安装。这是自用构建，未经应用商店分发审核。" \
+            > release-notes.md
+          gh release create "$tag" \
+            "DengTa-home-${version}-debug.apk" \
+            --title "DengTa Home ${version} (debug)" \
+            --prerelease \
+            --target "${{ github.sha }}" \
+            --notes-file release-notes.md
