@@ -22,7 +22,7 @@ DengTa Home 的安卓端是 Capacitor 原生壳 + React 网页包，应用编号
 
   | Secret | 值 |
   | --- | --- |
-  | `SUPABASE_PROJECT_REF` | 项目网址 `https://<这一段>.supabase.co` 里的那串字母 |
+  | `SUPABASE_PROJECT_REF` | 项目网址 `https://your-project.supabase.co` 里 `your-project` 的那一段 |
   | `SUPABASE_DB_PASSWORD` | 数据库密码本身 |
 
   工作流会自己去找项目所在区域的 Session pooler 主机 —— GitHub 运行器只有 IPv4，
