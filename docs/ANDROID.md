@@ -22,12 +22,18 @@ DengTa Home 的安卓端是 Capacitor 原生壳 + React 网页包，应用编号
 
   | Secret | 值 |
   | --- | --- |
-  | `SUPABASE_DB_URL` | Supabase `Connect` 对话框里的连接串，**照抄即可**，`[YOUR-PASSWORD]` 占位符不用管 |
+  | `SUPABASE_PROJECT_REF` | 项目网址 `https://<这一段>.supabase.co` 里的那串字母 |
   | `SUPABASE_DB_PASSWORD` | 数据库密码本身 |
 
-  连接串**必须选 Session pooler 那一条** —— GitHub 运行器只有 IPv4，而 Supabase 的
-  直连主机是 IPv6-only。工作流会把密码 URL 编码后填进占位符，所以密码里带
-  `@ : / # ? &` 之类的字符也不会破坏连接串；连接串和密码都不会出现在日志里。
+  工作流会自己去找项目所在区域的 Session pooler 主机 —— GitHub 运行器只有 IPv4，
+  而 Supabase 的直连主机是 IPv6-only，所以必须走 pooler。密码会先做 URL 编码再拼进
+  连接串，因此密码里带 `@ : / # ? &` 之类的字符也不会破坏连接；密码和连接串都不会出现
+  在日志里。若密码不对，工作流会在找到项目的那一刻就停下并说明，而不是把剩下的区域
+  挨个试一遍。
+
+  已经手上有完整连接串的，也可以改用 `SUPABASE_DB_URL`（保留 `[YOUR-PASSWORD]`
+  占位符时需同时提供 `SUPABASE_DB_PASSWORD`）。
+
   跑完的摘要会报告建了多少张表、多少张启用了行级安全，两个数字都应是 34。
 
 迁移文件都写成了可重复执行的形式，重复跑不会破坏已有数据。

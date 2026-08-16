@@ -36,10 +36,60 @@ jobs:
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
         run: |
+          # Copying the connection string out of the dashboard is the hardest
+          # step on a phone: the copy button sits off-screen. Given just the
+          # project ref and password, find the right pooler host by trying the
+          # regional endpoints until one authenticates.
+          if [ -z "$SUPABASE_DB_URL" ] && [ -n "$SUPABASE_PROJECT_REF" ]; then
+            if [ -z "$SUPABASE_DB_PASSWORD" ]; then
+              echo "有 SUPABASE_PROJECT_REF 但缺少 SUPABASE_DB_PASSWORD。" >&2
+              exit 1
+            fi
+            encoded="$(python3 -c 'import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1], safe=""))' "$SUPABASE_DB_PASSWORD")"
+            echo "::add-mask::$encoded"
+            echo "正在自动查找 $SUPABASE_PROJECT_REF 所在的区域……"
+            found=""
+            for region in \
+              ap-southeast-1 ap-northeast-1 ap-northeast-2 ap-southeast-2 \
+              ap-south-1 ap-east-1 us-east-1 us-east-2 us-west-1 us-west-2 \
+              eu-central-1 eu-central-2 eu-west-1 eu-west-2 eu-west-3 \
+              eu-north-1 sa-east-1 ca-central-1; do
+              for prefix in aws-0 aws-1; do
+                host="${prefix}-${region}.pooler.supabase.com"
+                candidate="postgresql://postgres.${SUPABASE_PROJECT_REF}:${encoded}@${host}:5432/postgres?connect_timeout=5"
+                if error="$(psql "$candidate" -Atqc "select 1;" 2>&1 >/dev/null)"; then
+                  echo "找到了：$host"
+                  found="$candidate"
+                  break 2
+                fi
+                # A rejected password means this IS the right region, so stop
+                # rather than trying every remaining endpoint with a password
+                # already known to be wrong.
+                case "$error" in
+                  *"password authentication failed"*|*"Wrong password"*)
+                    echo "在 $host 上找到了项目，但密码不对。" >&2
+                    echo "请核对 SUPABASE_DB_PASSWORD；忘记了可在 Supabase 的 Connect 页面点 Reset database password 重设。" >&2
+                    exit 1
+                    ;;
+                esac
+              done
+            done
+            if [ -z "$found" ]; then
+              echo "所有区域都连不上。请检查 SUPABASE_PROJECT_REF 是否正确。" >&2
+              echo "项目编号是项目网址 https://<这一段>.supabase.co 里的那串字母。" >&2
+              exit 1
+            fi
+            echo "::add-mask::$found"
+            echo "DB_URL=$found" >> "$GITHUB_ENV"
+            exit 0
+          fi
+
           if [ -z "$SUPABASE_DB_URL" ]; then
-            echo "缺少 Repository Secret：SUPABASE_DB_URL" >&2
-            echo "在 Settings > Secrets and variables > Actions 添加，值取自 Supabase 的 Connect 对话框。" >&2
+            echo "缺少 Repository Secret。二选一：" >&2
+            echo "  1) SUPABASE_PROJECT_REF + SUPABASE_DB_PASSWORD（推荐，不用复制连接串）" >&2
+            echo "  2) SUPABASE_DB_URL（+ 占位符未替换时再加 SUPABASE_DB_PASSWORD）" >&2
             exit 1
           fi
           case "$SUPABASE_DB_URL" in
